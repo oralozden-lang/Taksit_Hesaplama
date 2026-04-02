@@ -56,9 +56,33 @@ class _TaksitSayfasiState extends State<TaksitSayfasi> {
   double? sonucFark;
   List<AylikSatir> taksitTablosu = [];
 
+  void _anaParaChanged(String value) {
+    final digits = value.replaceAll('.', '');
+    if (digits.isEmpty) return;
+    final formatted = _addThousandSeparator(digits);
+    if (formatted != value) {
+      anaParaController.value = TextEditingValue(
+        text: formatted,
+        selection: TextSelection.collapsed(offset: formatted.length),
+      );
+    }
+  }
+
+  String _addThousandSeparator(String digits) {
+    if (digits.isEmpty) return '';
+    final buffer = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      if (i > 0 && (digits.length - i) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(digits[i]);
+    }
+    return buffer.toString();
+  }
+
   void hesapla() {
     final anaPara = double.tryParse(
-      anaParaController.text.replaceAll(',', '.'),
+      anaParaController.text.replaceAll('.', '').replaceAll(',', '.'),
     );
     final yillikFaiz = double.tryParse(
       faizController.text.replaceAll(',', '.'),
@@ -146,6 +170,7 @@ class _TaksitSayfasiState extends State<TaksitSayfasi> {
                     TextField(
                       controller: anaParaController,
                       keyboardType: TextInputType.number,
+                      onChanged: _anaParaChanged,
                       decoration: const InputDecoration(
                         labelText: 'Ana Para',
                         border: OutlineInputBorder(),
@@ -202,42 +227,27 @@ class _TaksitSayfasiState extends State<TaksitSayfasi> {
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text(
-                          'HESAPLA',
-                          style: TextStyle(fontSize: 16),
-                        ),
+                        child: const Text('Hesapla'),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
             if (taksitTutari != null) ...[
+              const SizedBox(height: 16),
               Card(
-                color: Colors.blue.shade50,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      const Text(
-                        'Özet',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Toplam Ödenecek Tutar'),
+                          const Text('Toplam Ödenecek'),
                           Text(
                             formatTutar(toplamOdenecek!),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
