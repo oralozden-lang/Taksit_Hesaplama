@@ -24,7 +24,7 @@ jobs:
           channel: 'stable'
           
       - run: flutter pub get
-      - run: flutter build web --release
+      - run: flutter build web --release --base-href="/Taksit_Hesaplama/"
       
       - uses: actions/configure-pages@v5
       
