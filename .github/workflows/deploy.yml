@@ -17,7 +17,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build web --release
       
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: build/web
           
